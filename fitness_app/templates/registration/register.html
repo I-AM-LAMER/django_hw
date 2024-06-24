@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block content %}
+{% if request.user.is_authenticated %}
+    <p class="text-center">You are already logged in</p>
+{% else %}
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card bg-light text-dark">
+                    <div class="card-header">
+                        <h5 class="card-title">Register</h5>
+                    </div>
+                    <div class="card-body">
+                        {{ errors }}
+                        <form action="{% url 'register' %}" method="POST">
+                            {% csrf_token %}
+                            {{ form.as_p }}
+                            <button type="submit" class="btn btn-primary">Register</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endif %}
+{% endblock %}

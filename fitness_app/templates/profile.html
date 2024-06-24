@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-lg-12">
+            <h2 class="mb-4 text-light">Profile</h2>
+            {% if request.user.is_authenticated %}
+            <div class="card bg-dark text-white mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Hello, {{ client.user.username }}!</h5>
+                    <p class="card-text"><small>Your balance: {{ client.net_worth }}</small></p> 
+                    <p class="card-text"><small>You are logged in.</small></p>
+                    <form action="{% url 'profile' %}" method="post">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                    </form>
+                    <form action="/logout/" method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger">Logout</button>
+                    </form>
+                </div>
+            </div>
+            <h6 class="mb-4 text-light">Subscriptions</h6>
+            <div class="card bg-dark text-white mb-4">
+                <div class="card-body">
+                {% for sub in subs %}
+                    <p class="card-title"><strong> Gym: {{ sub.gym }}!</strong></p>
+                    <p class="card-text"><small>Price: ${{ sub.price }}</small></p>
+                    <p class="card-text"><small>Expiring: {{ sub.expire_date }}</small></p>
+                    <p class="card-text"><small>Description: {{ sub.description }}</small></p>
+                {% endfor %}
+                </div>
+            </div>
+            {% else %}
+            <div class="card bg-dark text-white mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Not Logged In</h5>
+                    <p class="card-text"><small>You need to log in to view this profile.</small></p>
+                    <a href="{% url 'login' %}" class="btn btn-primary">Login</a>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

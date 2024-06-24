@@ -1,0 +1,79 @@
+<style>
+    .login-container {
+      max-width: 400px;
+      margin: auto;
+      padding: 20px;
+      background-color: #f9f9f9;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .error-message,.access-denied {
+      color: red;
+      margin-bottom: 15px;
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    .btn-login {
+      display: inline-block;
+      background-color: #007bff;
+      color: white;
+      padding: 10px 20px;
+      text-align: center;
+      text-decoration: none;
+      font-size: 16px;
+      margin-top: 10px;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+    
+    .lost-password-link {
+      display: inline-block;
+      color: #007bff;
+      text-decoration: underline;
+      margin-top: 10px;
+    }
+  
+    </style>
+    
+    {% extends "base.html" %}
+  
+    {% block content %}
+    <div class="login-container">
+      <h2>Login</h2>
+      {% if form.errors %}
+        <div class="error-message">
+          Your username and password didn't match. Please try again.
+        </div>
+      {% endif %}
+    
+      {% if next %}
+        {% if user.is_authenticated %}
+          <div class="access-denied">
+            Your account doesn't have access to this page. To proceed, please login with an account that has access.
+          </div>
+        {% else %}
+          <div class="access-denied">
+            Please login to see this page.
+          </div>
+        {% endif %}
+      {% endif %}
+    
+      <form method="post" action="{% url 'login' %}">
+        {% csrf_token %}
+        <div class="form-group">
+          {{ form.username.label_tag }}
+          {{ form.username }}
+        </div>
+        <div class="form-group">
+          {{ form.password.label_tag }}
+          {{ form.password }}
+        </div>
+        <button type="submit" class="btn-login">Login</button>
+        <input type="hidden" name="next" value="{{ next }}" />
+      </form>
+    </div>
+    {% endblock %}
