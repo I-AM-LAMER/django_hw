@@ -1,18 +1,18 @@
 """_summary_."""
 
 from rest_framework.authtoken.models import Token
-from rest_framework.serializers import HyperlinkedModelSerializer
+from rest_framework.serializers import ModelSerializer, PrimaryKeyRelatedField
 
-from .models import Certificate, Client, Coach, Gym, GymCoach, Subscription
+from .models import Certificate, Client, Coach, Gym, GymCoach, Subscription, Address, User
 
 ALL = '__all__'
 
 
-class ClientSerializer(HyperlinkedModelSerializer):
+class ClientSerializer(ModelSerializer):
     """_summary_.
 
     Args:
-        HyperlinkedModelSerializer (_type_): _description_
+        ModelSerializer (_type_): _description_
 
     Returns:
         _type_: _description_
@@ -34,76 +34,91 @@ class ClientSerializer(HyperlinkedModelSerializer):
         Returns:
             _type_: _description_
         """
-        user = Client.objects.create_user(**validated_data)
+        user = User.objects.create_user(**validated_data)
+        client = Client.objects.create(user=user)
         Token.objects.create(user=user)
-        return user
+        return client
 
 
-class GymSerializer(HyperlinkedModelSerializer):
+class GymSerializer(ModelSerializer):
     """_summary_.
 
     Args:
-        HyperlinkedModelSerializer (_type_): _description_
+        ModelSerializer (_type_): _description_
     """
+
+    coaches = PrimaryKeyRelatedField(many=True, queryset=Coach.objects.all())
+    address = PrimaryKeyRelatedField(queryset=Address.objects.all())
 
     class Meta:
         """_summary_."""
 
         model = Gym
-        fields = ALL
+        fields = ['id', 'gym_name', 'address', 'coaches']
+        read_only_fields=['id']
 
 
-class SubscriptionSerializer(HyperlinkedModelSerializer):
+class SubscriptionSerializer(ModelSerializer):
     """_summary_.
 
     Args:
-        HyperlinkedModelSerializer (_type_): _description_
+        ModelSerializer (_type_): _description_
     """
+    
+    gym = PrimaryKeyRelatedField(queryset=Gym.objects.all())
+    clients = PrimaryKeyRelatedField(many=True, queryset=Client.objects.all())
 
     class Meta:
         """_summary_."""
 
         model = Subscription
         fields = ALL
+        read_only_fields=['id']
 
 
-class CoachSerializer(HyperlinkedModelSerializer):
+class CoachSerializer(ModelSerializer):
     """_summary_.
 
     Args:
-        HyperlinkedModelSerializer (_type_): _description_
+        ModelSerializer (_type_): _description_
     """
+
+    gyms = PrimaryKeyRelatedField(many=True, queryset=Gym.objects.all())
 
     class Meta:
         """_summary_."""
 
         model = Coach
-        fields = ALL
+        fields = ['id', 'first_name', 'last_name', 'spec', 'gyms']
+        read_only_fields=['id']
 
 
-class CertificateSerializer(HyperlinkedModelSerializer):
+class CertificateSerializer(ModelSerializer):
     """_summary_.
 
     Args:
-        HyperlinkedModelSerializer (_type_): _description_
+        ModelSerializer (_type_): _description_
     """
+
+    coach = PrimaryKeyRelatedField(queryset=Coach.objects.all())
 
     class Meta:
         """_summary_."""
 
         model = Certificate
-        fields = ALL
+        fields = ['id', 'coach', 'certf_name', 'description']
+        read_only_fields=['id']
 
-
-class GymCoachSerializer(HyperlinkedModelSerializer):
+class AddressSerializer(ModelSerializer):
     """_summary_.
 
     Args:
-        HyperlinkedModelSerializer (_type_): _description_
+        ModelSerializer (_type_): _description_
     """
 
     class Meta:
         """_summary_."""
 
-        model = GymCoach
+        model = Address
         fields = ALL
+        read_only_fields=['id']

@@ -5,8 +5,8 @@ from rest_framework import authentication, permissions, viewsets
 
 from .forms import *
 from .models import *
-from .serializers import (CertificateSerializer, ClientSerializer,
-                          CoachSerializer, GymCoachSerializer, GymSerializer,
+from .serializers import (CertificateSerializer, AddressSerializer,
+                          CoachSerializer, GymSerializer,
                           SubscriptionSerializer)
 
 
@@ -28,9 +28,9 @@ def create_viewset(model_class, serializer):
     return ViewSet
 
 CoachViewSet = create_viewset(Coach, CoachSerializer)
-ClientViewSet = create_viewset(Client, ClientSerializer)
+# ClientViewSet = create_viewset(Client, ClientSerializer)
 GymViewSet = create_viewset(Gym, GymSerializer)
-GymCoachViewSet = create_viewset(GymCoach, GymCoachSerializer)
+AddressViewSet = create_viewset(Address, AddressSerializer)
 CertificateViewSet = create_viewset(Certificate, CertificateSerializer)
 SubscriptionViewSet = create_viewset(Subscription, SubscriptionSerializer)
 

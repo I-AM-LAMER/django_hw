@@ -201,7 +201,7 @@ class Gym(UUIDMixin, CreatedMixin, ModifiedMixin):
     """
 
     gym_name = models.CharField(max_length=100, null=False, blank=False)
-    address = models.ForeignKey(Address, on_delete=models.CASCADE)
+    address = models.ForeignKey(Address, blank=True, null=True, on_delete=models.CASCADE)
     coaches = models.ManyToManyField('Coach', through='GymCoach')
 
     def __str__(self) -> str:
@@ -244,7 +244,7 @@ class Certificate(UUIDMixin, CreatedMixin, ModifiedMixin):
     """
 
     coach = models.ForeignKey(Coach, on_delete=models.CASCADE)
-    certf_name = models.CharField(max_length=50, null=False, blank=False),
+    certf_name = models.CharField(max_length=50, null=False, blank=False)
     description = models.TextField(max_length=1000, blank=True)
 
     class Meta:
@@ -281,7 +281,7 @@ class Client(UUIDMixin):
     """
 
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    net_worth = models.DecimalField(null=False, blank=False, max_digits=9, decimal_places=2, validators=[check_money,], default=1000)
+    net_worth = models.DecimalField(null=False, blank=False, max_digits=9, decimal_places=2, validators=[check_money], default=1000)
 
     subs = models.ManyToManyField('Subscription', through='ClientSub')
 
@@ -307,11 +307,11 @@ class Subscription(UUIDMixin, CreatedMixin, ModifiedMixin):
         ModifiedMixin (_type_): _description_
     """
 
-    price = models.IntegerField(null=False, blank=False)
+    price = models.IntegerField(null=False, blank=False, validators=[check_money])
     expire_date = models.DateField(null=False, blank=False, validators=[check_date])
     description = models.TextField(null=True, blank=True, max_length=DESCRIPTION_MAX_LENGTH)
 
-    gym = models.ForeignKey(Gym, blank=False, null=False, on_delete=models.CASCADE)
+    gym = models.ForeignKey(Gym, on_delete=models.CASCADE)
     clients = models.ManyToManyField('Client', through='ClientSub')
 
     class Meta:

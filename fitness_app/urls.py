@@ -6,10 +6,10 @@ from rest_framework import routers
 router = routers.DefaultRouter()
 router.register(r'gym', GymViewSet)
 router.register(r'coach', CoachViewSet)
-router.register(r'gym_coach', GymCoachViewSet)
-router.register(r'Certificate', CertificateViewSet)
-router.register(r'Client', ClientViewSet)
-router.register(r'Subscription', SubscriptionViewSet)
+router.register(r'certificate', CertificateViewSet)
+router.register(r'subscription', SubscriptionViewSet)
+router.register(r'address', AddressViewSet)
+# router.register(r'Client', ClientViewSet)
 
 urlpatterns = [
     path('', main_page, name='homepage'),
