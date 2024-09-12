@@ -1,43 +1,43 @@
-"""_summary_."""
+"""This module contains Django admin configurations for various models in the application."""
 
 from django.contrib import admin
 
 from .forms import CertificateForm, CoachForm, GymForm
 from .models import Address, Certificate, Coach, Gym, GymCoach, Subscription
 
-# inlines
-
 
 class GymCoachInline(admin.TabularInline):
-    """_summary_.
+    """
+    Represents a tabular inline for editing GymCoach relationships.
 
-    Args:
-        admin (_type_): _description_
+    Attributes:
+        model (model): The model associated with this inline.
     """
 
     model = GymCoach
 
 
-# admins
-
-
 @admin.register(Address)
-class AddresAdmin(admin.ModelAdmin):
-    """_summary_.
+class AddressAdmin(admin.ModelAdmin):
+    """
+    Admin interface for managing Address objects.
 
-    Args:
-        admin (_type_): _description_
+    Attributes:
+        model (model): The model associated with this admin interface.
     """
 
     model = Address
 
 
 @admin.register(Coach)
-class CoacheAdmin(admin.ModelAdmin):
-    """_summary_.
+class CoachAdmin(admin.ModelAdmin):
+    """
+    Admin interface for managing Coach objects.
 
-    Args:
-        admin (_type_): _description_
+    Attributes:
+        model (model): The model associated with this admin interface.
+        form (form): The custom form used for Coach objects.
+        inlines (tuple): Inline models related to Coach.
     """
 
     model = Coach
@@ -47,10 +47,13 @@ class CoacheAdmin(admin.ModelAdmin):
 
 @admin.register(Gym)
 class GymAdmin(admin.ModelAdmin):
-    """_summary_.
+    """
+    Admin interface for managing Gym objects.
 
-    Args:
-        admin (_type_): _description_
+    Attributes:
+        model (model): The model associated with this admin interface.
+        form (form): The custom form used for Gym objects.
+        inlines (tuple): Inline models related to Gym.
     """
 
     model = Gym
@@ -59,11 +62,13 @@ class GymAdmin(admin.ModelAdmin):
 
 
 @admin.register(Certificate)
-class Certificate(admin.ModelAdmin):
-    """_summary_.
+class CertificateAdmin(admin.ModelAdmin):
+    """
+    Admin interface for managing Certificate objects.
 
-    Args:
-        admin (_type_): _description_
+    Attributes:
+        model (model): The model associated with this admin interface.
+        form (form): The custom form used for Certificate objects.
     """
 
     model = Certificate
@@ -72,10 +77,11 @@ class Certificate(admin.ModelAdmin):
 
 @admin.register(Subscription)
 class SubscriptionAdmin(admin.ModelAdmin):
-    """_summary_.
+    """
+    Admin interface for managing Subscription objects.
 
-    Args:
-        admin (_type_): _description_
+    Attributes:
+        model (model): The model associated with this admin interface.
     """
 
     model = Subscription

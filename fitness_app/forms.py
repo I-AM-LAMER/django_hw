@@ -1,4 +1,9 @@
-"""_summary_."""
+"""
+This module contains various forms used in the fitness application.
+
+including subscription management, gym registration, coach registration,
+certificate creation, and user registration.
+"""
 
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
@@ -12,66 +17,80 @@ MX_DIGITS = 11
 
 
 class SubscriptionForm(ModelForm):
-    """_summary_.
+    """
+    Form for creating or updating Subscription objects.
 
-    Args:
-        forms (_type_): _description_
+    Attributes:
+        model (model): The model associated with this form.
+        exclude (tuple): Fields excluded from the form.
     """
 
     class Meta:
-        """_summary_."""
+        """Meta class configuration for the SubscriptionForm."""
 
         model = Subscription
         exclude = ['id']
 
 
 class GymForm(ModelForm):
-    """_summary_.
+    """
+    Form for creating or updating Gym objects.
 
-    Args:
-        forms (_type_): _description_
+    Attributes:
+        model (model): The model associated with this form.
+        exclude (tuple): Fields excluded from the form.
     """
 
     class Meta:
-        """_summary_."""
+        """Meta class configuration for the GymForm."""
 
         model = Gym
         exclude = ['id']
 
 
 class CoachForm(ModelForm):
-    """_summary_.
+    """
+    Form for creating or updating Coach objects.
 
-    Args:
-        forms (_type_): _description_
+    Attributes:
+        model (model): The model associated with this form.
+        exclude (tuple): Fields excluded from the form.
     """
 
     class Meta:
-        """_summary_."""
+        """Meta class configuration for the CoachForm."""
 
         model = Coach
         exclude = ['id']
 
 
 class CertificateForm(ModelForm):
-    """_summary_.
+    """
+    Form for creating or updating Certificate objects.
 
-    Args:
-        forms (_type_): _description_
+    Attributes:
+        model (model): The model associated with this form.
+        exclude (tuple): Fields excluded from the form.
     """
 
     class Meta:
-        """_summary_."""
+        """Meta class configuration for the CertificateForm."""
 
         model = Certificate
         exclude = ['id']
 
 
 class RegistrationForm(UserCreationForm):
-    """_summary_.
+    """
+    Custom UserCreationForm for user registration with additional fields.
 
-    Args:
-        UserCreationForm (_type_): _description_
+    Attributes:
+        first_name (CharField): First name field.
+        last_name (CharField): Last name field.
+        email (EmailField): Email address field.
+
+    Returns:
+        tuple: A tuple containing the cleaned data and None.
     """
 
     first_name = CharField(max_length=CHARFIELD_LENGTH, required=True)
@@ -79,35 +98,38 @@ class RegistrationForm(UserCreationForm):
     email = EmailField(max_length=CHARFIELD_LENGTH * 2, required=True)
 
     class Meta:
-        """_summary_."""
+        """Meta class configuration for the RegistrationForm."""
 
         model = User
         fields = ['username', 'first_name', 'last_name', 'email', 'password1', 'password2']
 
 
 class AddFundsForm(Form):
-    """_summary_.
+    """
+    Form for adding funds to an account.
 
     Args:
-        Form (_type_): _description_
+        Form (_type_): Base Form class.
 
     Returns:
-        _type_: _description_
+        bool: True if the form is valid, False otherwise.
     """
 
     money = DecimalField(label='money', decimal_places=2, max_digits=MX_DIGITS)
 
     def is_valid(self) -> bool:
-        """_summary_.
+        """
+        Add custom validation method for the adding funds.
 
         Returns:
-            bool: _description_
+            bool: True if the form is valid, False otherwise.
         """
         def add_error(error):
-            """_summary_.
+            """
+            Add Helper function to add errors to the form.
 
             Args:
-                error (_type_): _description_
+                error (_type_): Error message to add.
             """
             if self.errors:
                 self.errors['money'] += [error]
@@ -118,7 +140,7 @@ class AddFundsForm(Form):
             return False
         money = self.cleaned_data.get('money', None)
         if not money:
-            add_error(ValidationError('an error occured, money field was not specified!'))
+            add_error(ValidationError('an error occurred, money field was not specified!'))
             return False
         if money < 0:
             add_error(ValidationError('you can only add positive amount of money!'))

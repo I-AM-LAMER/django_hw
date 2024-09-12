@@ -1,4 +1,8 @@
-"""summary."""
+"""
+This module defines various utility functions and Django models for managing.
+
+addresses, gyms, coaches, certificates, and subscriptions.
+"""
 
 from uuid import uuid4
 
@@ -10,63 +14,71 @@ from django.utils import timezone
 ADDRESS_NAME_LEN = 256
 DESCRIPTION_MAX_LENGTH = 1024
 MAX_AMOUNT_OF_MONEY = 10000000
+MAX_NAME_LENGTH = 50
 
 
 def check_money(money: int | float) -> None:
-    """_summary_.
+    """
+    Validate the amount of money.
 
     Args:
-        money (int | float): _description_
+        money (int | float): The amount of money to validate.
 
     Raises:
-        ValidationError: _description_
+        ValidationError: If the money is negative or exceeds the maximum allowed amount.
     """
     if money < 0 or money >= MAX_AMOUNT_OF_MONEY:
-        raise ValidationError(('The money should be in the range between 0 and 9999999.99 inclusive!'),
+        raise ValidationError(
+            (
+                'The money should be in the range between 0 and 9999999.99 inclusive!'
+            ),
             params={'money': money},
         )
 
 
 def check_datetime(time) -> None:
-    """_summary_.
+    """
+    Check if the given datetime is valid.
 
     Args:
-        time (_type_): _description_
+        time: The datetime to check.
 
     Raises:
-        ValidationError: _description_
+        ValidationError: If the datetime is in the future.
     """
     if time > timezone.now():
         raise ValidationError(
             message='Datetime is not valid',
-            params={'created_datetime': time}
+            params={'created_datetime': time},
         )
 
 
 def check_positive(number: int | float):
-    """Check the number is positive.
+    """
+    Check if the number is positive.
 
     Args:
-        number (int | float): your number
+        number (int | float): The number to check.
 
     Raises:
-        ValidationError: Error for django admin
+        ValidationError: If the number is not positive.
     """
     if number < 0:
         raise ValidationError(
             'number must be more than 0!',
             params={'number': number},
-            )
+        )
 
 
 def check_body(body: str):
-    """Check body`s stucture.
+    """
+    Check the structure of the body.
 
     Args:
-        body (str): your body
+        body (str): The body to check.
 
     Raises:
-        ValidationError: django error
+        ValidationError: If the body contains more than one character or is numeric.
     """
     if not body.isdigit() and len(body) > 1:
         raise ValidationError(
@@ -78,99 +90,82 @@ def check_body(body: str):
 
 
 def check_address_len(address: str):
-    """_summary_.
+    """
+    Check the length of the address.
 
     Args:
-        address (str): _description_
+        address (str): The address to check.
 
     Raises:
-        ValidationError: _description_
+        ValidationError: If the address is shorter than 10 characters.
     """
     if len(address) <= 10:
         raise ValidationError('address length cannot be less than 10!')
 
 
 def check_date(date):
-    """_summary_.
+    """
+    Check if the date is valid.
 
     Args:
-        date (_type_): _description_
+        date: The date to check.
 
     Raises:
-        ValidationError: _description_
+        ValidationError: If the date is in the past.
     """
     if date < timezone.localdate():
-        raise ValidationError(f'date is not valid')
+        raise ValidationError('date is not valid')
 
 
 class CreatedMixin(models.Model):
-    """_summary_.
-
-    Args:
-        models (_type_): _description_
-    """
+    """Mixin for automatically setting created datetime."""
 
     created_datetime = models.DateTimeField(
-        null=True, blank=True,
-        default=timezone.now, 
+        null=True,
+        blank=True,
+        default=timezone.now,
         validators=[
             check_datetime,
-        ]
+        ],
     )
 
     class Meta:
-        """_summary_."""
+        """Metadata for CreatedMixin."""
 
         abstract = True
 
 
 class ModifiedMixin(models.Model):
-    """_summary_.
-
-    Args:
-        models (_type_): _description_
-    """
+    """Mixin for automatically setting modified datetime."""
 
     modified_datetime = models.DateTimeField(
-        null=True, blank=True,
-        default=timezone.now, 
+        null=True,
+        blank=True,
+        default=timezone.now,
         validators=[
             check_datetime,
-        ]
+        ],
     )
 
     class Meta:
-        """_summary_."""
+        """Metadata for ModifiedMixin."""
 
         abstract = True
 
 
 class UUIDMixin(models.Model):
-    """_summary_.
-
-    Args:
-        models (_type_): _description_
-    """
+    """Mixin for using UUID as primary key."""
 
     id = models.UUIDField(primary_key=True, editable=False, default=uuid4)
 
     class Meta:
-        """_summary_."""
+        """Metadata for UUIDMixin."""
 
         abstract = True
 
 
 class Address(UUIDMixin, CreatedMixin, ModifiedMixin):
-    """_summary_.
-
-    Args:
-        UUIDMixin (_type_): _description_
-        CreatedMixin (_type_): _description_
-        ModifiedMixin (_type_): _description_
-
-    Returns:
-        _type_: _description_
-    """
+    """Model representing an address."""
 
     city_name = models.TextField(max_length=ADDRESS_NAME_LEN, null=False, blank=False)
     street_name = models.TextField(max_length=ADDRESS_NAME_LEN, null=False, blank=False)
@@ -179,133 +174,122 @@ class Address(UUIDMixin, CreatedMixin, ModifiedMixin):
     body = models.TextField(null=True, blank=True, validators=[check_body])
 
     def __str__(self) -> str:
+        """Represent Address class.
+
+        Returns:
+            str: string representation
+        """
         return f'{self.city_name}/{self.street_name}/{self.house_number}'
-    
+
     class Meta:
-        """_summary_."""
+        """Metadata for Address model."""
 
         db_table = '"address"'
         verbose_name = "address"
 
 
 class Gym(UUIDMixin, CreatedMixin, ModifiedMixin):
-    """_summary_.
-
-    Args:
-        UUIDMixin (_type_): _description_
-        CreatedMixin (_type_): _description_
-        ModifiedMixin (_type_): _description_
-
-    Returns:
-        _type_: _description_
-    """
+    """Model representing a gym."""
 
     gym_name = models.CharField(max_length=100, null=False, blank=False)
     address = models.ForeignKey(Address, blank=True, null=True, on_delete=models.CASCADE)
     coaches = models.ManyToManyField('Coach', through='GymCoach')
+    image_path = models.CharField(max_length=255, default="/templates/src/gym.png")
 
     def __str__(self) -> str:
+        """Represent Gym class.
+
+        Returns:
+            str: gym name
+        """
         return f'{self.gym_name}'
 
     class Meta:
-        """_summary_."""
+        """Metadata for Gym model."""
 
         db_table = '"gym"'
         verbose_name = "gym"
 
 
 class Coach(UUIDMixin, CreatedMixin, ModifiedMixin):
-    """_summary_.
+    """Model representing a coach."""
 
-    Args:
-        UUIDMixin (_type_): _description_
-        CreatedMixin (_type_): _description_
-        ModifiedMixin (_type_): _description_
-    """
-
-    first_name = models.CharField(max_length=50, null=False, blank=False)
-    last_name = models.CharField(max_length=50, null=False, blank=False)
+    first_name = models.CharField(max_length=MAX_NAME_LENGTH, null=False, blank=False)
+    last_name = models.CharField(max_length=MAX_NAME_LENGTH, null=False, blank=False)
     spec = models.CharField(max_length=100, null=False, blank=False)
+    image_path = models.CharField(max_length=255, default="/templates/src/coach.png")
 
     gyms = models.ManyToManyField('Gym', through='GymCoach')
 
     class Meta:
+        """Metadata for Coach model."""
+
         db_table = '"coach"'
         verbose_name = "coach"
 
 
 class Certificate(UUIDMixin, CreatedMixin, ModifiedMixin):
-    """_summary_.
-
-    Args:
-        UUIDMixin (_type_): _description_
-        CreatedMixin (_type_): _description_
-        ModifiedMixin (_type_): _description_
-    """
+    """Model representing a certificate."""
 
     coach = models.ForeignKey(Coach, on_delete=models.CASCADE)
-    certf_name = models.CharField(max_length=50, null=False, blank=False)
+    certf_name = models.CharField(max_length=MAX_NAME_LENGTH, null=False, blank=False)
     description = models.TextField(max_length=1000, blank=True)
 
     class Meta:
-        """_summary_."""
+        """Metadata for Certificate model."""
 
         db_table = '"certf"'
 
 
 class GymCoach(UUIDMixin):
-    """_summary_.
-
-    Args:
-        UUIDMixin (_type_): _description_
-    """
+    """Model representing a gym-coach relationship."""
 
     gym = models.ForeignKey(Gym, on_delete=models.CASCADE)
     coach = models.ForeignKey(Coach, on_delete=models.CASCADE)
 
     class Meta:
-        """_summary_."""
+        """Metadata for GymCoach model."""
 
         db_table = '"gym_coach"'
         unique_together = (('gym', 'coach'))
 
 
 class Client(UUIDMixin):
-    """_summary_.
-
-    Args:
-        UUIDMixin (_type_): _description_
-
-    Returns:
-        _type_: _description_
-    """
+    """Model representing a client."""
 
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    net_worth = models.DecimalField(null=False, blank=False, max_digits=9, decimal_places=2, validators=[check_money], default=1000)
+    net_worth = models.DecimalField(
+        null=False,
+        blank=False,
+        max_digits=9,
+        decimal_places=2,
+        validators=[check_money],
+        default=1000,
+        )
 
     subs = models.ManyToManyField('Subscription', through='ClientSub')
 
     def __str__(self) -> str:
-        return f'{self.user.username} ({self.user.first_name} {self.user.last_name})'
-    
+        """Represent Client class.
+
+        Returns:
+            str: user creditionals
+        """
+        return '{0} ({1} {2})'.format(self.user.username, self.user.first_name, self.user.last_name)
+
     def save(self, *args, **kwargs):
+        """Save."""
         check_money(self.net_worth)
         super().save(*args, **kwargs)
-    
+
     class Meta:
-        """_summary_."""
+        """Metadata for Client model."""
 
         db_table = '"client"'
 
 
 class Subscription(UUIDMixin, CreatedMixin, ModifiedMixin):
-    """_summary_.
-
-    Args:
-        UUIDMixin (_type_): _description_
-        CreatedMixin (_type_): _description_
-        ModifiedMixin (_type_): _description_
-    """
+    """Model representing a subscription."""
 
     price = models.IntegerField(null=False, blank=False, validators=[check_money])
     expire_date = models.DateField(null=False, blank=False, validators=[check_date])
@@ -315,23 +299,19 @@ class Subscription(UUIDMixin, CreatedMixin, ModifiedMixin):
     clients = models.ManyToManyField('Client', through='ClientSub')
 
     class Meta:
-        """_summary_."""
+        """Metadata for Subscription model."""
 
         db_table = '"subscription"'
 
 
 class ClientSub(UUIDMixin):
-    """_summary_.
-
-    Args:
-        UUIDMixin (_type_): _description_
-    """
+    """Model representing a client-subscription relationship."""
 
     client = models.ForeignKey(Client, on_delete=models.CASCADE)
     sub = models.ForeignKey(Subscription, on_delete=models.CASCADE)
 
     class Meta:
-        """_summary_."""
+        """Metadata for ClientSub model."""
 
         db_table = '"client_sub"'
         unique_together = (('sub', 'client'))

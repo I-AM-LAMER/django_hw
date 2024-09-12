@@ -36,8 +36,9 @@
             <div class="card bg-dark text-white mb-4">
                 <div class="card-body">
                     <h5 class="card-title">Not Logged In</h5>
-                    <p class="card-text"><small>You need to log in to view this profile.</small></p>
-                    <a href="{% url 'login' %}" class="btn btn-primary">Login</a>
+                    <p class="card-text"><small>You need to log in or sign up to view this profile.</small></p>
+                    <a href="{% url 'login' %}" class="btn btn-primary">Log in</a>
+                    <a href="{% url 'register' %} " class="btn btn-primary">Sign Up </a>
                 </div>
             </div>
             {% endif %}

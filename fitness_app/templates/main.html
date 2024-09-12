@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}Welcome to Fitness Center{% endblock %}
+
+{% block content %}
+<h1>Welcome to Fitness Center</h1>
+<p>Find your nearest gym, book a session with a certified coach, or manage your subscription today!</p>
+
+<div class="gym-list">
+    {% for gym in gyms %}
+        <div class="gym-card">
+            <img src="{{ gym.image.url }}" alt="{{ gym.gym_name }}">
+            <h2>{{ gym.gym_name }}</h2>
+            <p>Address: {{ gym.address.city_name }}, {{ gym.address.street_name }} {{ gym.address.house_number }}</p>
+            <button><a href="{% url 'gym_detail' gym.id %}">View Details</a></button>
+        </div>
+    {% endfor %}
+</div>
+
+<div class="coach-list">
+    {% for coach in coaches %}
+        <div class="coach-card">
+            <img src="{{ coach.image.url }}" alt="{{ coach.first_name }} {{ coach.last_name }}">
+            <h2>{{ coach.first_name }} {{ coach.last_name }}</h2>
+            <p>Specialization: {{ coach.spec }}</p>
+            <button><a href="{% url 'coach_detail' coach.id %}">Book Session</a></button>
+        </div>
+    {% endfor %}
+</div>
+
+<button><a href="{% url 'subscribe' %}">Subscribe Now</a></button>
+{% endblock %}

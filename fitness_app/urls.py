@@ -1,7 +1,10 @@
-from django.urls import path, include
+"""Module for routing."""
+
 from django.contrib.auth import views as auth_views
-from .views import *
+from django.urls import include, path
 from rest_framework import routers
+
+from .views import *
 
 router = routers.DefaultRouter()
 router.register(r'gym', GymViewSet)
@@ -15,7 +18,7 @@ urlpatterns = [
     path('', main_page, name='homepage'),
     path('accounts/', include('django.contrib.auth.urls')),
     path('accounts/profile/', profile, name='profile'),
-    path('accounts/register/', register, name='register'),
+    path('register/', register, name='register'),
     path('rest/', include(router.urls)),
     path('gyms/', gyms_page),
     path('coaches/', coaches_page),

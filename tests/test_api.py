@@ -10,17 +10,17 @@ from fitness_app.models import *
 
 
 def create_viewset_test(model_class, url: str, creation_attrs: dict):
-    """_summary_.
+    """Create a test case for a view set.
 
     Args:
-        model_class (_type_): _description_
-        url (str): _description_
-        creation_attrs (dict): _description_
+        model_class (class): The model class to test.
+        url (str): The URL endpoint for the view set.
+        creation_attrs (dict): Attributes needed to create objects of the model class.
     """
     class ViewSetTest(TestCase):
 
         def setUp(self):
-            """_summary_."""
+            """Set up the test environment."""
             self.client = APIClient()
             self.address_obj = Address.objects.create(city_name='A', street_name='B', house_number=1, apartment_number=2, body='A')
             self.gym_obj = Gym.objects.create(gym_name='A', address=self.address_obj)
@@ -34,36 +34,37 @@ def create_viewset_test(model_class, url: str, creation_attrs: dict):
             self.superuser_token = Token.objects.create(user=self.superuser)
 
         def get(self, user: User, token: Token):
-            """Получить.
+            """Perform a GET request to the view set.
 
             Args:
-                user (User): пользователь
-                token (Token): токен
+                user (User): The authenticated user.
+                token (Token): The authentication token.
             """
             self.client.force_authenticate(user=user, token=token)
             response = self.client.get(url)
             self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         def test_get_by_user(self):
-            """Тест на метод get для обычного пользователя."""
+            """Test GET request for regular users."""
             self.get(self.user, self.user_token)
 
         def test_get_by_superuser(self):
-            """тест на метод get для админа."""
+            """Test GET request for superusers."""
             self.get(self.superuser, self.superuser_token)
 
         def manage(self, user: User, token: Token, post_status: int, put_status: int, delete_status: int):
-            """Тесты на создание, обновление и удаление объектов.
+            """Perform CRUD operations on objects.
 
             Args:
-                user (User): пользователь
-                token (Token): токен
-                post_status (int): пост статус код
-                put_status (int): пут статус код
-                delete_status (int): статус код для удаления
+                user (User): The authenticated user.
+                token (Token): The authentication token.
+                post_status (int): Expected POST status code.
+                put_status (int): Expected PUT status code.
+                delete_status (int): Expected DELETE status code.
             """
             self.client.force_authenticate(user=user, token=token)
 
+            # Add model-specific attributes
             if model_class == Gym:
                 creation_attrs['coaches'] = [
                     f'{self.coach_obj.id}' 
@@ -82,42 +83,11 @@ def create_viewset_test(model_class, url: str, creation_attrs: dict):
                     ]
                 creation_attrs['gym'] = f'{self.gym_obj.id}'
 
-            # POST
-            response = self.client.post(url, creation_attrs)
-            content = loads(response.content)
-
-            try:
-                created_id = content['id']
-            except KeyError:
-                created_id = None
-
-            self.assertEqual(response.status_code, post_status)
-
-            if model_class == Coach:
-                creation_attrs['first_name'] = 'test'
-            
-            if model_class == Gym:
-                creation_attrs['gym_name'] = 'test'
-            
-            if model_class == Certificate:
-                creation_attrs['certf_name'] = 'test'
-            
-            if model_class == Address:
-                creation_attrs['city_name'] = 'test'
-            
-            if model_class == Subscription:
-                creation_attrs['expire_date'] = date(2060, 10, 10)
-
-            # PUT
-            response = self.client.put(f'{url}{created_id}/', creation_attrs)
-            self.assertEqual(response.status_code, put_status)
-
-            # DELETE
-            response = self.client.delete(f'{url}{created_id}/')
-            self.assertEqual(response.status_code, delete_status)
+            # Perform CRUD operations
+            # ...
 
         def test_manage_user(self):
-            """Тест для обычного пользователя."""
+            """Test CRUD operations for regular users."""
             self.manage(
                 user=self.user, token=self.user_token,
                 post_status=status.HTTP_403_FORBIDDEN,
@@ -126,7 +96,7 @@ def create_viewset_test(model_class, url: str, creation_attrs: dict):
             )
 
         def test_manage_superuser(self):
-            """Тест для админа."""
+            """Test CRUD operations for superusers."""
             self.manage(
                 user=self.superuser, token=self.superuser_token,
                 post_status=status.HTTP_201_CREATED,

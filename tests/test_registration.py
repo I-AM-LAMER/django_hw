@@ -1,4 +1,4 @@
-"""Модуль для тестов на регистрацию."""
+"""Module for registration tests."""
 
 from django.contrib.auth.models import User
 from django.test import TestCase
@@ -6,7 +6,7 @@ from django.test import client as test_client
 
 
 class TestRegistration(TestCase):
-    """Класс для тестов регистрации."""
+    """Class for registration tests."""
 
     _url = '/accounts/register/'
     _valid_creds = {
@@ -19,17 +19,17 @@ class TestRegistration(TestCase):
     }
 
     def setUp(self):
-        """Параметры."""
+        """Set up test parameters."""
         self.client = test_client.Client()
 
     def test_invalid(self):
-        """Тест с некорректными данными."""
+        """Test with invalid credentials."""
         invalid_creds = self._valid_creds.copy()
         invalid_creds['password1'] = 'abc'
         self.client.post(self._url, invalid_creds)
         self.assertEqual(len(User.objects.filter(username='user')), 0)
 
     def test_valid(self):
-        """Тест с корректными данными."""
+        """Test with valid credentials."""
         self.client.post(self._url, self._valid_creds)
         self.assertEqual(len(User.objects.filter(username='user')), 1)

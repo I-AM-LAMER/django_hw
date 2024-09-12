@@ -3,7 +3,8 @@
 from rest_framework.authtoken.models import Token
 from rest_framework.serializers import ModelSerializer, PrimaryKeyRelatedField
 
-from .models import Certificate, Client, Coach, Gym, GymCoach, Subscription, Address, User
+from .models import (Address, Certificate, Client, Coach, Gym, Subscription,
+                     User)
 
 ALL = '__all__'
 
@@ -54,8 +55,8 @@ class GymSerializer(ModelSerializer):
         """_summary_."""
 
         model = Gym
-        fields = ['id', 'gym_name', 'address', 'coaches']
-        read_only_fields=['id']
+        fields = ['id', 'gym_name', 'address', 'coaches', 'image_path']
+        read_only_fields = ['id']
 
 
 class SubscriptionSerializer(ModelSerializer):
@@ -64,7 +65,7 @@ class SubscriptionSerializer(ModelSerializer):
     Args:
         ModelSerializer (_type_): _description_
     """
-    
+
     gym = PrimaryKeyRelatedField(queryset=Gym.objects.all())
     clients = PrimaryKeyRelatedField(many=True, queryset=Client.objects.all())
 
@@ -73,7 +74,7 @@ class SubscriptionSerializer(ModelSerializer):
 
         model = Subscription
         fields = ALL
-        read_only_fields=['id']
+        read_only_fields = ['id']
 
 
 class CoachSerializer(ModelSerializer):
@@ -89,8 +90,8 @@ class CoachSerializer(ModelSerializer):
         """_summary_."""
 
         model = Coach
-        fields = ['id', 'first_name', 'last_name', 'spec', 'gyms']
-        read_only_fields=['id']
+        fields = ['id', 'first_name', 'last_name', 'spec', 'gyms', 'image_path']
+        read_only_fields = ['id']
 
 
 class CertificateSerializer(ModelSerializer):
@@ -107,7 +108,8 @@ class CertificateSerializer(ModelSerializer):
 
         model = Certificate
         fields = ['id', 'coach', 'certf_name', 'description']
-        read_only_fields=['id']
+        read_only_fields = ['id']
+
 
 class AddressSerializer(ModelSerializer):
     """_summary_.
@@ -121,4 +123,4 @@ class AddressSerializer(ModelSerializer):
 
         model = Address
         fields = ALL
-        read_only_fields=['id']
+        read_only_fields = ['id']
