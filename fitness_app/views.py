@@ -38,9 +38,9 @@ class MyPermission(permissions.BasePermission):
         Returns:
             bool: True if the permission should be granted, False otherwise.
         """
-        if request.method in set('GET', 'OPTIONS', 'HEAD'):
+        if request.method in set(['GET', 'OPTIONS', 'HEAD']):
             return bool(request.user and request.user.is_authenticated)
-        elif request.method in set('POST', 'DELETE', 'PUT'):
+        elif request.method in set(['POST', 'DELETE', 'PUT']):
             return bool(request.user and request.user.is_superuser)
         return False
 
@@ -165,7 +165,7 @@ def profile(request: WSGIRequest):
     """
     if request.user.is_authenticated:
         if request.user.is_superuser:
-            client = Client.objects.get(user=request.user)
+            client = Client.objects.filter(user=request.user).first()
             if not client:
                 client = Client.objects.create(user=request.user)
         else:

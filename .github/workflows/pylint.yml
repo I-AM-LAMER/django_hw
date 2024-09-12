@@ -25,15 +25,19 @@ jobs:
         pip install -r tests/requirements.txt
         chmod +x tests/test.sh
     - name: Test api
-      run: ./tests/test.sh tests.test_api
-    - name: Test models
-      run: ./tests/test.sh tests.test_models
-    - name: Test views
-      run: ./tests/test.sh tests.test_views
-    - name: Test forms
-      run: ./tests/test.sh tests.test_forms
-    - name: Test booking tickets
-      run: ./tests/test.sh tests.test_book_tickets
-    
+      run: python3 manage.py test test
+  linter:
+    name: Linter
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.10.12
+    - name: Dependencies installation
+      run: |
+        python -m pip install --upgrade pip
+        pip install flake8==7.1.1
     - name: Flake8
       run: flake8

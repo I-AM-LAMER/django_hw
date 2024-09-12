@@ -194,7 +194,6 @@ class Gym(UUIDMixin, CreatedMixin, ModifiedMixin):
     gym_name = models.CharField(max_length=100, null=False, blank=False)
     address = models.ForeignKey(Address, blank=True, null=True, on_delete=models.CASCADE)
     coaches = models.ManyToManyField('Coach', through='GymCoach')
-    image_path = models.CharField(max_length=255, default="/templates/src/gym.png")
 
     def __str__(self) -> str:
         """Represent Gym class.
@@ -217,7 +216,6 @@ class Coach(UUIDMixin, CreatedMixin, ModifiedMixin):
     first_name = models.CharField(max_length=MAX_NAME_LENGTH, null=False, blank=False)
     last_name = models.CharField(max_length=MAX_NAME_LENGTH, null=False, blank=False)
     spec = models.CharField(max_length=100, null=False, blank=False)
-    image_path = models.CharField(max_length=255, default="/templates/src/coach.png")
 
     gyms = models.ManyToManyField('Gym', through='GymCoach')
 
