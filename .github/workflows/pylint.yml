@@ -23,7 +23,6 @@ jobs:
       run: |
         python3 -m pip install --upgrade pip
         pip install -r tests/requirements.txt
-        chmod +x tests/test.sh
     - name: Test api
       run: python3 manage.py test test
   linter:
