@@ -102,16 +102,18 @@
         <h2>Our Coaches</h2>
         {% for coach in coaches %}
         <div class="coach-item">
-            <h3>{{ coach.first_name }} {{ coach.last_name }}</h3>
-            <p>{{ coach.specialization }}</p>
-            {% if coach.certificates %}
-            <strong>Certifications:</strong>
-            <ul>
-                {% for cert in coach.certificates.all %}
-                <li>{{ cert.name }}</li>
-                {% endfor %}
-            </ul>
-            {% endif %}
+            <a href="{% url 'coach' coach.id %}">
+                <h3>{{ coach.first_name }} {{ coach.last_name }}</h3>
+                <p>{{ coach.specialization }}</p>
+                {% if coach.certificates %}
+                <strong>Certifications:</strong>
+                <ul>
+                    {% for cert in coach.certificates.all %}
+                    <li>{{ cert.name }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+            </a>
         </div>
         {% empty %}
         <p>No coaches available at this time.</p>

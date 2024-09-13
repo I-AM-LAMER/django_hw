@@ -8,7 +8,7 @@ subscription management, gym and coach detail pages, and other utility functions
 from django.contrib.auth import decorators
 from django.core.handlers.wsgi import WSGIRequest
 from django.shortcuts import HttpResponse, redirect, render
-from rest_framework import authentication, permissions, viewsets
+from rest_framework import permissions, viewsets
 
 from .forms import *
 from .models import *
@@ -38,9 +38,9 @@ class MyPermission(permissions.BasePermission):
         Returns:
             bool: True if the permission should be granted, False otherwise.
         """
-        if request.method in set(['GET', 'OPTIONS', 'HEAD']):
+        if request.method in ('GET', 'OPTIONS', 'HEAD'):
             return bool(request.user and request.user.is_authenticated)
-        elif request.method in set(['POST', 'DELETE', 'PUT']):
+        elif request.method in ('POST', 'DELETE', 'PUT'):
             return bool(request.user and request.user.is_superuser)
         return False
 
@@ -59,7 +59,7 @@ def create_viewset(model_class, serializer):
     class ViewSet(viewsets.ModelViewSet):
         queryset = model_class.objects.all()
         serializer_class = serializer
-        authentication_classes = [authentication.TokenAuthentication]
+        # authentication_classes = [authentication.TokenAuthentication]
         permission_classes = [MyPermission]
     return ViewSet
 
@@ -97,23 +97,6 @@ def register(request: WSGIRequest):
         'registration/register.html',
         {'form': form, 'errors': errors, 'request': request},
     )
-
-
-def subs_page(request: WSGIRequest):
-    """
-    Display subscription page for authenticated users.
-
-    Args:
-        request (WSGIRequest): The current HTTP request object.
-
-    Returns:
-        HttpResponse: Render the subscriptions template.
-    """
-    if request.user.is_authenticated:
-        user = request.user
-        subs = Subscription.objects.filter(user=user)
-        return render(request, 'subs.html', {'subs': subs})
-    return redirect('registration/login')
 
 
 def subscribe(request: WSGIRequest):
@@ -269,5 +252,6 @@ def coach_detail_page(request: WSGIRequest, pk):
         HttpResponse: Render the coach detail template.
     """
     coach = Coach.objects.get(id=pk)
-    certfs = Certificate.objects.filter(coach=coach).values_list()
+    certfs = Certificate.objects.filter(coach=coach).all()
+    print(certfs)
     return render(request, 'coach.html', {'coach': coach, 'certfs': certfs})
