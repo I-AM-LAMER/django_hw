@@ -90,10 +90,10 @@ def create_viewset_test(model_class, url: str, creation_attrs: dict):
                 creation_attrs['first_name'] = 'test'
 
             try:
-                response = self.client.put(f'{url}{loads(response.content)['id']}/', creation_attrs)
+                response = self.client.put(f'{url}{loads(response.content)["id"]}/', creation_attrs)
                 self.assertEqual(response.status_code, put_status)
 
-                response = self.client.delete(f'{url}{loads(response.content)['id']}/')
+                response = self.client.delete(f'{url}{loads(response.content)["id"]}/')
                 self.assertEqual(response.status_code, delete_status)
             except KeyError:
                 pass

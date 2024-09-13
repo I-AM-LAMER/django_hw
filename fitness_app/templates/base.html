@@ -21,6 +21,7 @@
         main.container {
         padding: 20px;
     }
+        
     </style>
 </head>
 <body>
@@ -54,7 +55,21 @@
     </nav>
 
     <main role="main" class="container">
-        {% block content %}{% endblock %}
+        {% block content %}
+            {% if not user.is_authenticated %}
+                <h1>Welcome to Crossfit Planet</h1>
+                <p>This is a fitness application where you can find gyms, coaches, and subscribe to training programs.</p>
+                <p>To explore our services, please <a href="{% url 'login' %}">log in</a> or <a href="{% url 'register' %}">create an account</a>.</p>
+            {% else %}
+                <h1>Hi {{ user.username }}!</h1>
+                <p>You're logged in! Feel free to browse our gym listings, coach profiles, or manage your subscriptions.</p>
+                <ul>
+                <li><a href="/gyms">View Gyms</a></li>
+                <li><a href="/coaches">View Coaches</a></li>
+                <li><a href="/accounts/profile">Manage Profile</a></li>
+                </ul>
+            {% endif %}
+        {% endblock %}
     </main>
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>

@@ -132,7 +132,7 @@ def main_page(request: WSGIRequest):
     Returns:
         HttpResponse: Render the base template.
     """
-    return render(request, 'base.html')
+    return render(request, 'base.html', {'user': request.user})
 
 
 @decorators.login_required
