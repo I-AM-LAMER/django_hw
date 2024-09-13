@@ -37,10 +37,6 @@ jobs:
       run: docker compose up -d --build
     - name: Test api
       run: python3 manage.py test tests
-    - name: Sleep
-      run: sleep 5
-    - name: Stop docker container
-      run: docker compose down
   linter:
     name: Linter
     runs-on: ubuntu-latest
