@@ -82,7 +82,7 @@ class GymSerializer(ModelSerializer):
         """
 
         model = Gym
-        fields = ['id', 'gym_name', 'address', 'coaches', 'image_path']
+        fields = ['id', 'gym_name', 'address', 'coaches']
         read_only_fields = ['id']
 
 
@@ -148,7 +148,7 @@ class CoachSerializer(ModelSerializer):
         """
 
         model = Coach
-        fields = ['id', 'first_name', 'last_name', 'spec', 'gyms', 'image_path']
+        fields = ['id', 'first_name', 'last_name', 'spec', 'gyms']
         read_only_fields = ['id']
 
 

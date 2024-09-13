@@ -24,7 +24,7 @@ jobs:
         python3 -m pip install --upgrade pip
         pip install -r tests/requirements.txt
     - name: Test api
-      run: python3 manage.py test test
+      run: python3 manage.py test tests
   linter:
     name: Linter
     runs-on: ubuntu-latest

@@ -8,7 +8,7 @@ from django.test import client as test_client
 class TestRegistration(TestCase):
     """Class for registration tests."""
 
-    _url = '/accounts/register/'
+    _url = '/register/'
     _valid_creds = {
         'username': 'user',
         'password1': 'new_password123',
